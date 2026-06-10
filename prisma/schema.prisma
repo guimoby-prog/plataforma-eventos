@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  location    String?
+  logoUrl     String?
+  bannerUrl   String?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sessions     Session[]
+  speakers     Speaker[]
+  participants Participant[]
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  eventId     String
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  track       String?
+  day         String?
+  createdAt   DateTime @default(now())
+
+  event    Event     @relation(fields: [eventId], references: [id])
+  speakers Speaker[] @relation("SessionSpeakers")
+  checkins Checkin[]
+}
+
+model Speaker {
+  id       String  @id @default(cuid())
+  eventId  String
+  name     String
+  bio      String?
+  photoUrl String?
+  role     String  @default("SPEAKER")
+
+  event    Event     @relation(fields: [eventId], references: [id])
+  sessions Session[] @relation("SessionSpeakers")
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Float   @default(0)
+
+  participants Participant[]
+}
+
+model Participant {
+  id           String    @id @default(cuid())
+  eventId      String
+  categoryId   String
+  name         String
+  email        String
+  phone        String?
+  document     String?
+  qrCode       String    @unique @default(cuid())
+  lgpdAccepted Boolean   @default(false)
+  confirmedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  event    Event     @relation(fields: [eventId], references: [id])
+  category Category  @relation(fields: [categoryId], references: [id])
+  checkins Checkin[]
+
+  @@unique([eventId, email])
+}
+
+model Checkin {
+  id            String   @id @default(cuid())
+  participantId String
+  sessionId     String?
+  checkedInAt   DateTime @default(now())
+
+  participant Participant @relation(fields: [participantId], references: [id])
+  session     Session?    @relation(fields: [sessionId], references: [id])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+
+  accounts      Account[]
+  adminSessions AdminSession[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model AdminSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
