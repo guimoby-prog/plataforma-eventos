@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AdminLogoutButton from "./AdminLogoutButton";
 
 const MENU = [
   { href: "/admin", label: "Dashboard", icon: "▦" },
@@ -12,7 +13,6 @@ const MENU = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <aside className="w-64 bg-gray-900 text-white flex flex-col">
         <div className="px-6 py-5 border-b border-gray-700">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Plataforma Eventos</p>
@@ -30,14 +30,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
           ))}
         </nav>
-        <div className="px-6 py-4 border-t border-gray-700">
-          <Link href="/" className="text-xs text-gray-400 hover:text-white transition-colors">
+        <div className="px-6 py-4 border-t border-gray-700 space-y-2">
+          <Link href="/" className="block text-xs text-gray-400 hover:text-white transition-colors">
             ← Ver hotsite
           </Link>
+          <AdminLogoutButton />
         </div>
       </aside>
 
-      {/* Conteúdo */}
       <main className="flex-1 overflow-auto">
         {children}
       </main>
