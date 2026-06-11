@@ -10,6 +10,8 @@ type FormData = {
   telefone: string;
   cpf: string;
   categoria: string;
+  senha: string;
+  confirmarSenha: string;
   lgpd: boolean;
   termos: boolean;
 };
@@ -20,6 +22,8 @@ const INITIAL: FormData = {
   telefone: "",
   cpf: "",
   categoria: "",
+  senha: "",
+  confirmarSenha: "",
   lgpd: false,
   termos: false,
 };
@@ -68,6 +72,14 @@ export default function Inscricao() {
     e.preventDefault();
     setErro("");
 
+    if (form.senha.length < 6) {
+      setErro("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+    if (form.senha !== form.confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
     if (!form.lgpd || !form.termos) {
       setErro("Você precisa aceitar a Política de Privacidade e os Termos de Participação.");
       return;
@@ -186,6 +198,34 @@ export default function Inscricao() {
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
+          </div>
+
+          {/* Senha */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Senha <span className="text-red-500">*</span></label>
+              <input
+                name="senha"
+                type="password"
+                value={form.senha}
+                onChange={handleChange}
+                required
+                placeholder="Mínimo 6 caracteres"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar senha <span className="text-red-500">*</span></label>
+              <input
+                name="confirmarSenha"
+                type="password"
+                value={form.confirmarSenha}
+                onChange={handleChange}
+                required
+                placeholder="Repita a senha"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
 
           {/* LGPD e Termos */}

@@ -10,7 +10,7 @@ export default function Navbar({ eventName }: { eventName: string }) {
         <div className="flex gap-6 text-sm font-medium text-gray-600">
           <Link href="/#programacao" className="hover:text-blue-600 transition-colors">Programação</Link>
           <Link href="/#palestrantes" className="hover:text-blue-600 transition-colors">Palestrantes</Link>
-          <Link href="/participante" className="hover:text-blue-600 transition-colors">Minha inscrição</Link>
+          <Link href="/participante/area" className="hover:text-blue-600 transition-colors">Minha área</Link>
           <Link href="/inscricao" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
             Inscreva-se
           </Link>

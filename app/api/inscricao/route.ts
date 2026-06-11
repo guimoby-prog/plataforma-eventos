@@ -1,27 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
-    const { nome, email, telefone, cpf, categoria } = await req.json();
+    const { nome, email, telefone, cpf, categoria, senha } = await req.json();
 
-    if (!nome || !email || !telefone || !cpf || !categoria) {
+    if (!nome || !email || !telefone || !cpf || !categoria || !senha) {
       return NextResponse.json({ erro: "Preencha todos os campos obrigatórios." }, { status: 400 });
     }
 
-    // Busca o evento ativo (primeiro publicado)
     const evento = await prisma.event.findFirst({ where: { isPublished: true } });
     if (!evento) {
       return NextResponse.json({ erro: "Nenhum evento disponível para inscrição." }, { status: 404 });
     }
 
-    // Busca ou cria a categoria
     let cat = await prisma.category.findFirst({ where: { name: categoria } });
     if (!cat) {
       cat = await prisma.category.create({ data: { name: categoria } });
     }
 
-    // Verifica se já está inscrito
     const existente = await prisma.participant.findUnique({
       where: { eventId_email: { eventId: evento.id, email } },
     });
@@ -29,7 +27,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ erro: "Este e-mail já está inscrito neste evento." }, { status: 409 });
     }
 
-    // Cria a inscrição
+    const senhaHash = await bcrypt.hash(senha, 12);
+
     const participante = await prisma.participant.create({
       data: {
         eventId: evento.id,
@@ -38,6 +37,7 @@ export async function POST(req: NextRequest) {
         email,
         phone: telefone,
         document: cpf,
+        password: senhaHash,
         lgpdAccepted: true,
         confirmedAt: new Date(),
       },
