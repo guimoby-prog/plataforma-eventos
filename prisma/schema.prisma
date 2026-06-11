@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Event {
@@ -48,7 +47,7 @@ model Speaker {
   name     String
   bio      String?
   photoUrl String?
-  role     String  @default("SPEAKER")
+  role     String  @default("Palestrante")
 
   event    Event     @relation(fields: [eventId], references: [id])
   sessions Session[] @relation("SessionSpeakers")
@@ -98,7 +97,7 @@ model User {
   id        String   @id @default(cuid())
   name      String?
   email     String   @unique
-  role      String   @default("ADMIN")
+  role      String   @default("Administrador")
   createdAt DateTime @default(now())
 
   accounts      Account[]
