@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-type Pergunta = { id: string; texto: string; aprovada: boolean; respondida: boolean; participant: { name: string }; createdAt: string };
+type Pergunta = { id: string; texto: string; aprovada: boolean; respondida: boolean; participant: { name: string }; createdAt: Date };
 type OpcaoEnquete = { id: string; texto: string; ordem: number };
-type Enquete = { id: string; pergunta: string; ativa: boolean; opcoes: OpcaoEnquete[]; respostas: { opcaoId: string }[] } | null;
-type Sessao = { id: string; title: string; speakers: { name: string }[]; perguntas: Pergunta[]; enquetes: Enquete[] };
+type Enquete = { id: string; pergunta: string; ativa: boolean; opcoes: OpcaoEnquete[]; respostas: { opcaoId: string; id: string; enqueteId: string; participantId: string; createdAt: Date }[] } | null;
+type Sessao = { id: string; title: string; speakers: { name: string; id: string; bio: string | null; photoUrl: string | null; role: string; eventId: string }[]; perguntas: Pergunta[]; enquetes: NonNullable<Enquete>[] };
 
 export default function PainelModeracao({ sessao: sessaoInicial }: { sessao: Sessao }) {
   const [perguntas, setPerguntas] = useState<Pergunta[]>(sessaoInicial.perguntas);

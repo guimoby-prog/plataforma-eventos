@@ -466,3 +466,17 @@ Run taskkill /PID 18284 /F to stop it.
 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
 
  GET / 200 in 3.4s (next.js: 314ms, application-code: 3.1s)
+ GET /acesso-admin 200 in 96ms (next.js: 25ms, application-code: 71ms)
+ POST /api/admin/auth/login 401 in 67ms (next.js: 54ms, application-code: 14ms)
+ POST /api/admin/auth/login 401 in 7ms (next.js: 2ms, application-code: 4ms)
+ POST /api/admin/auth/login 401 in 5ms (next.js: 2ms, application-code: 3ms)
+ POST /api/admin/auth/login 401 in 6ms (next.js: 2ms, application-code: 4ms)
+ POST /api/admin/auth/login 401 in 6ms (next.js: 2ms, application-code: 3ms)
+ GET /acesso-admin 200 in 31ms (next.js: 4ms, application-code: 27ms)
+ POST /api/admin/auth/login 401 in 6ms (next.js: 3ms, application-code: 3ms)
+ POST /api/admin/auth/login 401 in 9ms (next.js: 4ms, application-code: 5ms)
+ GET /acesso-admin 200 in 31ms (next.js: 3ms, application-code: 28ms)
+ POST /api/admin/auth/login 401 in 5ms (next.js: 1907µs, application-code: 3ms)
+ POST /api/admin/auth/login 401 in 6ms (next.js: 3ms, application-code: 3ms)
+ GET /acesso-admin 200 in 35ms (next.js: 4ms, application-code: 31ms)
+ POST /api/admin/auth/login 401 in 6ms (next.js: 1982µs, application-code: 4ms)
