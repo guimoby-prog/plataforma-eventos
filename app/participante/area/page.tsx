@@ -4,18 +4,30 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function AreaParticipante() {
   const cookieStore = await cookies();
   const participanteId = cookieStore.get("participante_id")?.value;
-
   if (!participanteId) redirect("/login");
 
   const participante = await prisma.participant.findUnique({
     where: { id: participanteId },
     include: { category: true, event: true, checkins: { include: { session: true } } },
   });
-
   if (!participante) redirect("/login");
+
+  const agora = new Date();
+  const sessoes = await prisma.session.findMany({
+    where: { eventId: participante.eventId },
+    include: { speakers: true },
+    orderBy: { startTime: "asc" },
+  });
+
+  const aoVivo = sessoes.filter(
+    (s) => s.startTime && s.endTime && s.startTime <= agora && s.endTime >= agora
+  );
+  const proximas = sessoes.filter((s) => s.startTime && s.startTime > agora).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -23,20 +35,20 @@ export default async function AreaParticipante() {
 
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-blue-600 text-sm hover:underline">← Voltar ao evento</Link>
+          <Link href="/" className="text-[#00A859] text-sm hover:underline">← Voltar ao evento</Link>
           <LogoutButton />
         </div>
 
         {/* Card do participante */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold text-white" style={{ background: "#00A859" }}>
               {participante.name.charAt(0)}
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-900">{participante.name}</h1>
               <p className="text-sm text-gray-500">{participante.email}</p>
-              <span className="inline-block mt-1 bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full">
+              <span className="inline-block mt-1 bg-green-50 text-[#00A859] text-xs font-medium px-2 py-0.5 rounded-full border border-green-100">
                 {participante.category.name}
               </span>
             </div>
@@ -48,18 +60,61 @@ export default async function AreaParticipante() {
           </div>
         </div>
 
+        {/* Ao vivo agora */}
+        {aoVivo.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse inline-block" />
+              Ao vivo agora
+            </h2>
+            {aoVivo.map((s) => (
+              <Link key={s.id} href={`/participante/sessao/${s.id}`}
+                className="block bg-white rounded-2xl border-2 border-[#00A859] p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-gray-900">{s.title}</p>
+                    {s.speakers.length > 0 && <p className="text-sm text-gray-500 mt-0.5">{s.speakers.map((sp) => sp.name).join(", ")}</p>}
+                    {s.location && <p className="text-xs text-gray-400 mt-0.5">📍 {s.location}</p>}
+                  </div>
+                  <span className="shrink-0 bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded-full">AO VIVO</span>
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-[#00A859] text-sm font-medium">
+                  <span>Participar → perguntas, enquetes e avaliação</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* Próximas sessões */}
+        {proximas.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="font-semibold text-gray-900">Próximas sessões</h2>
+            {proximas.map((s) => (
+              <div key={s.id} className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex gap-4 items-start">
+                <div className="text-center min-w-[48px]">
+                  <p className="text-sm font-bold text-[#00A859]">
+                    {s.startTime ? new Date(s.startTime).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 text-sm">{s.title}</p>
+                  {s.speakers.length > 0 && <p className="text-xs text-gray-500 mt-0.5">{s.speakers.map((sp) => sp.name).join(", ")}</p>}
+                  {s.location && <p className="text-xs text-gray-400 mt-0.5">📍 {s.location}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* QR Code */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">
           <h2 className="font-semibold text-gray-900 mb-4">Seu QR Code de acesso</h2>
-          <img
-            src={`/api/qrcode?codigo=${participante.qrCode}`}
-            alt="QR Code de acesso"
-            className="mx-auto w-52 h-52"
-          />
+          <img src={`/api/qrcode?codigo=${participante.qrCode}`} alt="QR Code" className="mx-auto w-52 h-52" />
           <p className="text-xs text-gray-400 mt-3">Apresente na entrada do evento para o credenciamento</p>
         </div>
 
-        {/* Presença */}
+        {/* Histórico de presença */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h2 className="font-semibold text-gray-900 mb-3">Histórico de presença</h2>
           {participante.checkins.length === 0 ? (
@@ -68,11 +123,9 @@ export default async function AreaParticipante() {
             <div className="space-y-2">
               {participante.checkins.map((c) => (
                 <div key={c.id} className="flex items-center gap-3 text-sm">
-                  <span className="text-green-500">✓</span>
+                  <span className="text-[#00A859]">✓</span>
                   <span className="text-gray-700">{c.session?.title ?? "Entrada geral"}</span>
-                  <span className="text-gray-400 ml-auto">
-                    {new Date(c.checkedInAt).toLocaleDateString("pt-BR")}
-                  </span>
+                  <span className="text-gray-400 ml-auto">{new Date(c.checkedInAt).toLocaleDateString("pt-BR")}</span>
                 </div>
               ))}
             </div>

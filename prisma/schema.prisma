@@ -46,7 +46,10 @@ model Session {
 
   event    Event     @relation(fields: [eventId], references: [id])
   speakers Speaker[] @relation("SessionSpeakers")
-  checkins Checkin[]
+  checkins  Checkin[]
+  perguntas Pergunta[]
+  enquetes  Enquete[]
+  avaliacoes Avaliacao[]
 }
 
 model Speaker {
@@ -87,7 +90,10 @@ model Participant {
 
   event    Event     @relation(fields: [eventId], references: [id])
   category Category  @relation(fields: [categoryId], references: [id])
-  checkins Checkin[]
+  checkins  Checkin[]
+  perguntas Pergunta[]
+  respostasEnquete RespostaEnquete[]
+  avaliacoes Avaliacao[]
 
   @@unique([eventId, email])
 }
@@ -109,6 +115,69 @@ model Checkin {
 
   participant Participant @relation(fields: [participantId], references: [id])
   session     Session?    @relation(fields: [sessionId], references: [id])
+}
+
+model Pergunta {
+  id            String   @id @default(cuid())
+  sessionId     String
+  participantId String
+  texto         String
+  aprovada      Boolean  @default(false)
+  respondida    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  session     Session     @relation(fields: [sessionId], references: [id])
+  participant Participant @relation(fields: [participantId], references: [id])
+}
+
+model Enquete {
+  id        String   @id @default(cuid())
+  sessionId String
+  pergunta  String
+  ativa     Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  session   Session           @relation(fields: [sessionId], references: [id])
+  opcoes    OpcaoEnquete[]
+  respostas RespostaEnquete[]
+}
+
+model OpcaoEnquete {
+  id        String @id @default(cuid())
+  enqueteId String
+  texto     String
+  ordem     Int    @default(0)
+
+  enquete   Enquete           @relation(fields: [enqueteId], references: [id])
+  respostas RespostaEnquete[]
+}
+
+model RespostaEnquete {
+  id            String   @id @default(cuid())
+  enqueteId     String
+  opcaoId       String
+  participantId String
+  createdAt     DateTime @default(now())
+
+  enquete     Enquete      @relation(fields: [enqueteId], references: [id])
+  opcao       OpcaoEnquete @relation(fields: [opcaoId], references: [id])
+  participant Participant  @relation(fields: [participantId], references: [id])
+
+  @@unique([enqueteId, participantId])
+}
+
+model Avaliacao {
+  id            String   @id @default(cuid())
+  sessionId     String
+  participantId String
+  nota          Int
+  comentario    String?
+  createdAt     DateTime @default(now())
+
+  session     Session     @relation(fields: [sessionId], references: [id])
+  participant Participant @relation(fields: [participantId], references: [id])
+
+  @@unique([sessionId, participantId])
 }
 
 model User {

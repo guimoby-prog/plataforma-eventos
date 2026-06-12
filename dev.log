@@ -454,3 +454,15 @@ Run taskkill /PID 18284 /F to stop it.
  GET / 200 in 1646ms (next.js: 4ms, application-code: 1643ms)
  GET / 200 in 1750ms (next.js: 64ms, application-code: 1687ms)
  GET /credenciamento 200 in 61ms (next.js: 17ms, application-code: 44ms)
+
+> plataforma-eventos@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://172.20.10.3:3000
+- Environments: .env
+✓ Ready in 527ms
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / 200 in 3.4s (next.js: 314ms, application-code: 3.1s)
