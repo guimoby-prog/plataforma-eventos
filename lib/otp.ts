@@ -46,7 +46,7 @@ export async function enviarEmailOtp(email: string, nome: string, codigo: string
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
-    from: "Plataforma Eventos <noreply@seudominio.com>",
+    from: "Plataforma Eventos <onboarding@resend.dev>",
     to: email,
     subject: "Seu código de verificação",
     html: `

@@ -17,3 +17,19 @@
 
 Run taskkill /PID 18284 /F to stop it.
 [?25h
+
+> plataforma-eventos@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.65:3000
+- Environments: .env
+✓ Ready in 544ms
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+ GET / 200 in 2.0s (next.js: 160ms, application-code: 1882ms)
+ GET / 200 in 1678ms (next.js: 4ms, application-code: 1674ms)
+ GET / 200 in 1771ms (next.js: 3ms, application-code: 1768ms)
+  Reload env: .env
+ GET / 200 in 1644ms (next.js: 27ms, application-code: 1617ms)
