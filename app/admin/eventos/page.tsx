@@ -36,9 +36,14 @@ export default async function Eventos() {
               </p>
               {evento.location && <p className="text-sm text-gray-400 mt-0.5">{evento.location}</p>}
             </div>
-            <Link href={`/admin/eventos/${evento.id}`} className="text-sm text-blue-600 hover:underline whitespace-nowrap">
-              Editar
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href={`/admin/eventos/${evento.id}/visual`} className="text-sm font-medium text-[#00A859] hover:underline whitespace-nowrap">
+                🎨 Visual
+              </Link>
+              <Link href={`/admin/eventos/${evento.id}`} className="text-sm text-blue-600 hover:underline whitespace-nowrap">
+                Editar
+              </Link>
+            </div>
           </div>
         ))}
       </div>

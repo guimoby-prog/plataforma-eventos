@@ -7,17 +7,25 @@ datasource db {
 }
 
 model Event {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  startDate   DateTime
-  endDate     DateTime
-  location    String?
-  logoUrl     String?
-  bannerUrl   String?
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  startDate      DateTime
+  endDate        DateTime
+  location       String?
+  logoUrl        String?
+  bannerUrl      String?
+  isPublished    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Visual
+  primaryColor   String   @default("#00A859")
+  secondaryColor String   @default("#005C2E")
+  fontFamily     String   @default("Inter")
+  heroTitle      String?
+  heroSubtitle   String?
+  footerText     String?
 
   sessions     Session[]
   speakers     Speaker[]
