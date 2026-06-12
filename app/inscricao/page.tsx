@@ -113,7 +113,7 @@ export default function Inscricao() {
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">✓</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Inscrição realizada!</h1>
           <p className="text-gray-500 mb-6">Enviamos um e-mail de confirmação para <strong>{form.email}</strong>. Verifique sua caixa de entrada.</p>
-          <Link href="/" className="text-blue-600 font-medium hover:underline">← Voltar ao início</Link>
+          <Link href="/" className="text-[#00A859] font-medium hover:underline">← Voltar ao início</Link>
         </div>
       </div>
     );
@@ -123,7 +123,7 @@ export default function Inscricao() {
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-lg mx-auto">
         <div className="mb-8">
-          <Link href="/" className="text-blue-600 text-sm hover:underline">← Voltar ao evento</Link>
+          <Link href="/" className="text-[#00A859] text-sm hover:underline">← Voltar ao evento</Link>
           <h1 className="text-3xl font-bold text-gray-900 mt-4">Formulário de Inscrição</h1>
           <p className="text-gray-500 mt-1">Preencha os dados abaixo para garantir sua vaga.</p>
         </div>
@@ -139,7 +139,7 @@ export default function Inscricao() {
               onChange={handleChange}
               required
               placeholder="Seu nome completo"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]"
             />
           </div>
 
@@ -153,7 +153,7 @@ export default function Inscricao() {
               onChange={handleChange}
               required
               placeholder="seu@email.com"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]"
             />
           </div>
 
@@ -167,7 +167,7 @@ export default function Inscricao() {
                 onChange={handleTelefone}
                 required
                 placeholder="(00) 00000-0000"
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]"
               />
             </div>
             <div>
@@ -178,7 +178,7 @@ export default function Inscricao() {
                 onChange={handleCPF}
                 required
                 placeholder="000.000.000-00"
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]"
               />
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function Inscricao() {
               value={form.categoria}
               onChange={handleChange}
               required
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859] bg-white"
             >
               <option value="">Selecione sua categoria</option>
               {CATEGORIAS_PARTICIPANTE.map((cat) => (
@@ -211,7 +211,7 @@ export default function Inscricao() {
                 onChange={handleChange}
                 required
                 placeholder="Mínimo 6 caracteres"
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]"
               />
             </div>
             <div>
@@ -223,7 +223,7 @@ export default function Inscricao() {
                 onChange={handleChange}
                 required
                 placeholder="Repita a senha"
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]"
               />
             </div>
           </div>
@@ -236,10 +236,10 @@ export default function Inscricao() {
                 name="lgpd"
                 checked={form.lgpd}
                 onChange={handleChange}
-                className="mt-0.5 w-4 h-4 accent-blue-600"
+                className="mt-0.5 w-4 h-4 accent-[#00A859]"
               />
               <span className="text-sm text-gray-600">
-                Li e aceito a <span className="text-blue-600 underline cursor-pointer">Política de Privacidade</span> e o <span className="text-blue-600 underline cursor-pointer">Aviso de Privacidade (LGPD)</span>. <span className="text-red-500">*</span>
+                Li e aceito a <span className="text-[#00A859] underline cursor-pointer">Política de Privacidade</span> e o <span className="text-[#00A859] underline cursor-pointer">Aviso de Privacidade (LGPD)</span>. <span className="text-red-500">*</span>
               </span>
             </label>
             <label className="flex items-start gap-3 cursor-pointer">
@@ -248,10 +248,10 @@ export default function Inscricao() {
                 name="termos"
                 checked={form.termos}
                 onChange={handleChange}
-                className="mt-0.5 w-4 h-4 accent-blue-600"
+                className="mt-0.5 w-4 h-4 accent-[#00A859]"
               />
               <span className="text-sm text-gray-600">
-                Li e aceito os <span className="text-blue-600 underline cursor-pointer">Termos de Participação</span> e a <span className="text-blue-600 underline cursor-pointer">Política de Cancelamento</span>. <span className="text-red-500">*</span>
+                Li e aceito os <span className="text-[#00A859] underline cursor-pointer">Termos de Participação</span> e a <span className="text-[#00A859] underline cursor-pointer">Política de Cancelamento</span>. <span className="text-red-500">*</span>
               </span>
             </label>
           </div>
@@ -267,7 +267,7 @@ export default function Inscricao() {
           <button
             type="submit"
             disabled={enviando}
-            className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-[#00A859] text-white font-semibold py-3 rounded-xl hover:bg-[#008C45] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {enviando ? "Enviando..." : "Confirmar inscrição"}
           </button>

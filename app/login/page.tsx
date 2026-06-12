@@ -84,22 +84,22 @@ export default function Login() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
                 <input name="email" type="email" value={form.email} onChange={handleChange} required
                   placeholder="seu@email.com"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
                 <input name="senha" type="password" value={form.senha} onChange={handleChange} required
                   placeholder="Sua senha"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]" />
               </div>
               {erro && <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">{erro}</div>}
               <button type="submit" disabled={carregando}
-                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-60">
+                className="w-full bg-[#00A859] text-white font-semibold py-3 rounded-xl hover:bg-[#008C45] transition-colors disabled:opacity-60">
                 {carregando ? "Verificando..." : "Entrar"}
               </button>
               <p className="text-center text-sm text-gray-500 mt-4">
                 Não tem conta?{" "}
-                <Link href="/inscricao" className="text-blue-600 hover:underline">Faça sua inscrição</Link>
+                <Link href="/inscricao" className="text-[#00A859] hover:underline">Faça sua inscrição</Link>
               </p>
             </form>
           )}
@@ -114,7 +114,7 @@ export default function Login() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Código de verificação</label>
                 <input name="otp" value={form.otp} onChange={handleChange} required
                   maxLength={6} placeholder="000000"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-center text-2xl tracking-widest font-bold focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-center text-2xl tracking-widest font-bold focus:outline-none focus:ring-2 focus:ring-[#00A859]" />
               </div>
               {erro && (
                 <div className={`text-sm rounded-lg px-4 py-3 ${erro.includes("enviado") ? "bg-green-50 border border-green-200 text-green-700" : "bg-red-50 border border-red-200 text-red-700"}`}>
@@ -122,11 +122,11 @@ export default function Login() {
                 </div>
               )}
               <button type="submit" disabled={carregando}
-                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-60">
+                className="w-full bg-[#00A859] text-white font-semibold py-3 rounded-xl hover:bg-[#008C45] transition-colors disabled:opacity-60">
                 {carregando ? "Verificando..." : "Confirmar código"}
               </button>
               <div className="text-center space-y-2">
-                <button type="button" onClick={reenviarCodigo} className="text-sm text-blue-600 hover:underline">
+                <button type="button" onClick={reenviarCodigo} className="text-sm text-[#00A859] hover:underline">
                   Reenviar código
                 </button>
                 <br />
