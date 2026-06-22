@@ -84,8 +84,10 @@ model Participant {
   phone        String?
   document     String?
   password     String?
-  qrCode       String    @unique @default(cuid())
-  lgpdAccepted Boolean   @default(false)
+  qrCode          String    @unique @default(cuid())
+  lgpdAccepted    Boolean   @default(false)
+  faceDescriptor  String?
+  fotoFace        String?
   confirmedAt  DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

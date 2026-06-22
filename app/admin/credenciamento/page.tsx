@@ -31,13 +31,16 @@ export default async function AdminCredenciamento() {
           <h1 className="text-2xl font-bold text-gray-900">Credenciamento</h1>
           <p className="text-gray-500 mt-1">Acompanhe a entrada dos participantes em tempo real</p>
         </div>
-        <Link
-          href="/credenciamento"
-          target="_blank"
-          className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-        >
-          Abrir leitor de QR Code →
-        </Link>
+        <div className="flex gap-3">
+          <Link href="/credenciamento/facial" target="_blank"
+            className="bg-[#00A859] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-[#008C45] transition-colors">
+            🪪 Reconhecimento Facial →
+          </Link>
+          <Link href="/credenciamento" target="_blank"
+            className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-colors">
+            Abrir leitor de QR Code →
+          </Link>
+        </div>
       </div>
 
       {/* Cards de resumo */}

@@ -121,6 +121,19 @@ export default async function AreaParticipante() {
           </div>
         )}
 
+        {/* Identificação facial */}
+        <Link href="/participante/facial"
+          className="block bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-[#00A85915] flex items-center justify-center text-2xl shrink-0">🪪</div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900">Identificação Facial</p>
+              <p className="text-sm text-gray-500">Cadastre seu rosto para credenciamento rápido</p>
+            </div>
+            <span className="text-gray-300">→</span>
+          </div>
+        </Link>
+
         {/* Leitor QR da feira */}
         <LeitorQrFeira />
 
