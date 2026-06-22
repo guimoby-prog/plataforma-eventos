@@ -9,6 +9,7 @@ const MENU = [
   { href: "/admin/programacao", label: "Programação", icon: "📋" },
   { href: "/admin/credenciamento", label: "Credenciamento", icon: "✅" },
   { href: "/admin/moderacao", label: "Moderação", icon: "🎙️" },
+  { href: "/admin/expositores", label: "Expositores", icon: "🤝" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -31,6 +31,7 @@ model Event {
   speakers     Speaker[]
   participants Participant[]
   secoes       Secao[]
+  expositores  Expositor[]
 }
 
 model Session {
@@ -95,6 +96,7 @@ model Participant {
   perguntas Pergunta[]
   respostasEnquete RespostaEnquete[]
   avaliacoes Avaliacao[]
+  visitas   VisitaExpositor[]
 
   @@unique([eventId, email])
 }
@@ -116,6 +118,33 @@ model Checkin {
 
   participant Participant @relation(fields: [participantId], references: [id])
   session     Session?    @relation(fields: [sessionId], references: [id])
+}
+
+model Expositor {
+  id        String   @id @default(cuid())
+  eventId   String
+  nome      String
+  email     String
+  senha     String
+  qrCode    String   @unique
+  pontos    Int      @default(10)
+  descricao String?
+  createdAt DateTime @default(now())
+
+  event   Event             @relation(fields: [eventId], references: [id])
+  visitas VisitaExpositor[]
+}
+
+model VisitaExpositor {
+  id            String   @id @default(cuid())
+  expositorId   String
+  participantId String
+  createdAt     DateTime @default(now())
+
+  expositor   Expositor   @relation(fields: [expositorId], references: [id])
+  participant Participant @relation(fields: [participantId], references: [id])
+
+  @@unique([expositorId, participantId])
 }
 
 model Secao {

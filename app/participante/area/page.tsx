@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
+import LeitorQrFeira from "./LeitorQrFeira";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,12 @@ export default async function AreaParticipante() {
 
   const participante = await prisma.participant.findUnique({
     where: { id: participanteId },
-    include: { category: true, event: true, checkins: { include: { session: true } } },
+    include: {
+      category: true,
+      event: true,
+      checkins: { include: { session: true } },
+      visitas: { include: { expositor: { select: { nome: true, pontos: true } } }, orderBy: { createdAt: "desc" } },
+    },
   });
   if (!participante) redirect("/login");
 
@@ -23,6 +29,26 @@ export default async function AreaParticipante() {
     include: { speakers: true },
     orderBy: { startTime: "asc" },
   });
+
+  // Ranking dos participantes do mesmo evento
+  const todasVisitas = await prisma.visitaExpositor.findMany({
+    where: { expositor: { eventId: participante.eventId } },
+    include: { expositor: { select: { pontos: true } }, participant: { select: { id: true, name: true } } },
+  });
+
+  const pontosMap = new Map<string, { nome: string; total: number }>();
+  for (const v of todasVisitas) {
+    const entry = pontosMap.get(v.participantId) ?? { nome: v.participant.name, total: 0 };
+    entry.total += v.expositor.pontos;
+    pontosMap.set(v.participantId, entry);
+  }
+  const ranking = Array.from(pontosMap.entries())
+    .map(([id, d]) => ({ id, nome: d.nome, total: d.total }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10);
+
+  const meusPontos = participante.visitas.reduce((acc, v) => acc + v.expositor.pontos, 0);
+  const minhaPos = ranking.findIndex((r) => r.id === participanteId) + 1;
 
   const aoVivo = sessoes.filter(
     (s) => s.startTime && s.endTime && s.startTime <= agora && s.endTime >= agora
@@ -59,6 +85,64 @@ export default async function AreaParticipante() {
             {participante.document && <p><span className="font-medium text-gray-700">CPF:</span> {participante.document}</p>}
           </div>
         </div>
+
+        {/* Pontuação da feira */}
+        {(meusPontos > 0 || participante.visitas.length > 0) && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">🏆 Feira de Negócios</h2>
+            <div className="grid grid-cols-3 gap-3 mb-5">
+              <div className="text-center bg-gray-50 rounded-xl p-3">
+                <p className="text-2xl font-bold text-[#00A859]">{meusPontos}</p>
+                <p className="text-xs text-gray-500 mt-0.5">Pontos</p>
+              </div>
+              <div className="text-center bg-gray-50 rounded-xl p-3">
+                <p className="text-2xl font-bold text-[#00A859]">{participante.visitas.length}</p>
+                <p className="text-xs text-gray-500 mt-0.5">Estandes</p>
+              </div>
+              <div className="text-center bg-gray-50 rounded-xl p-3">
+                <p className="text-2xl font-bold text-[#00A859]">{minhaPos > 0 ? `#${minhaPos}` : "—"}</p>
+                <p className="text-xs text-gray-500 mt-0.5">Posição</p>
+              </div>
+            </div>
+
+            {participante.visitas.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Estandes visitados</p>
+                <div className="space-y-1.5">
+                  {participante.visitas.map((v) => (
+                    <div key={v.id} className="flex items-center justify-between text-sm">
+                      <span className="text-gray-700 flex items-center gap-1.5"><span className="text-[#00A859]">✓</span>{v.expositor.nome}</span>
+                      <span className="text-xs font-medium text-[#00A859]">+{v.expositor.pontos} pts</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Leitor QR da feira */}
+        <LeitorQrFeira />
+
+        {/* Ranking */}
+        {ranking.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 className="font-semibold text-gray-900 mb-4">🏅 Ranking — Feira de Negócios</h2>
+            <div className="space-y-2">
+              {ranking.map((r, i) => (
+                <div key={r.id} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${r.id === participanteId ? "bg-green-50 border border-green-100" : ""}`}>
+                  <span className={`text-sm font-bold w-6 text-center ${i === 0 ? "text-yellow-500" : i === 1 ? "text-gray-400" : i === 2 ? "text-amber-600" : "text-gray-300"}`}>
+                    {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}º`}
+                  </span>
+                  <span className={`flex-1 text-sm ${r.id === participanteId ? "font-semibold text-[#00A859]" : "text-gray-700"}`}>
+                    {r.nome}{r.id === participanteId ? " (você)" : ""}
+                  </span>
+                  <span className="text-sm font-bold text-gray-900">{r.total} pts</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Ao vivo agora */}
         {aoVivo.length > 0 && (
