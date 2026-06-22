@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import QRCode from "qrcode";
+import UploadImagem from "@/components/UploadImagem";
 
 type Expositor = {
   id: string;
@@ -9,6 +10,7 @@ type Expositor = {
   email: string;
   pontos: number;
   descricao: string | null;
+  logoUrl?: string | null;
   qrCode: string;
   event: { name: string };
   _count: { visitas: number };
@@ -16,7 +18,7 @@ type Expositor = {
 
 type Evento = { id: string; name: string };
 
-const FORM_VAZIO = { eventId: "", nome: "", email: "", senha: "", pontos: "10", descricao: "" };
+const FORM_VAZIO = { eventId: "", nome: "", email: "", senha: "", pontos: "10", descricao: "", logoUrl: "" };
 
 export default function GerenciadorExpositores({ expositores: inicial, eventos }: { expositores: Expositor[]; eventos: Evento[] }) {
   const [expositores, setExpositores] = useState(inicial);
@@ -77,7 +79,7 @@ export default function GerenciadorExpositores({ expositores: inicial, eventos }
   }
 
   function iniciarEdicao(e: Expositor) {
-    setForm({ eventId: "", nome: e.nome, email: e.email, senha: "", pontos: String(e.pontos), descricao: e.descricao ?? "" });
+    setForm({ eventId: "", nome: e.nome, email: e.email, senha: "", pontos: String(e.pontos), descricao: e.descricao ?? "", logoUrl: e.logoUrl ?? "" });
     setEditando(e.id);
     setMostrarForm(true);
   }
@@ -140,6 +142,9 @@ export default function GerenciadorExpositores({ expositores: inicial, eventos }
               <textarea value={form.descricao} onChange={(e) => setForm((f) => ({ ...f, descricao: e.target.value }))}
                 rows={2} placeholder="Apresentação do expositor..."
                 className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A859]" />
+            </div>
+            <div className="sm:col-span-2">
+              <UploadImagem label="Logo do expositor (opcional)" valor={form.logoUrl} onChange={(url) => setForm((f) => ({ ...f, logoUrl: url }))} pasta="expositores" formato="quadrado" />
             </div>
           </div>
           <div className="flex justify-end gap-2 mt-4">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PAPEIS_PALESTRANTE } from "@/lib/constants";
+import UploadImagem from "@/components/UploadImagem";
 
 type Evento = { id: string; name: string };
 type Palestrante = {
@@ -96,15 +97,7 @@ export default function FormPalestrante({ palestrante, eventos }: { palestrante?
           className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">URL da foto</label>
-        <input name="photoUrl" value={form.photoUrl} onChange={handleChange}
-          placeholder="https://exemplo.com/foto.jpg"
-          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        {form.photoUrl && (
-          <img src={form.photoUrl} alt="Preview" className="mt-3 w-16 h-16 rounded-full object-cover border border-gray-200" />
-        )}
-      </div>
+      <UploadImagem label="Foto do palestrante" valor={form.photoUrl} onChange={(url) => setForm((p) => ({ ...p, photoUrl: url }))} pasta="palestrantes" formato="quadrado" />
 
       {erro && <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">{erro}</div>}
 

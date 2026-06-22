@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import UploadImagem from "@/components/UploadImagem";
 
 const FONTES = [
   { value: "Inter", label: "Inter — moderna e limpa" },
@@ -169,25 +170,9 @@ export default function EditorVisual({ evento }: { evento: Evento }) {
           {/* Imagens */}
           <section>
             <h2 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Imagens</h2>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">URL do Logo</label>
-                <input value={form.logoUrl} onChange={(e) => set("logoUrl", e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
-                  placeholder="https://..." />
-                {form.logoUrl && (
-                  <img src={form.logoUrl} alt="logo" className="mt-2 h-10 object-contain rounded" onError={(e) => (e.currentTarget.style.display = "none")} />
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">URL do Banner</label>
-                <input value={form.bannerUrl} onChange={(e) => set("bannerUrl", e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
-                  placeholder="https://..." />
-                {form.bannerUrl && (
-                  <img src={form.bannerUrl} alt="banner" className="mt-2 w-full h-16 object-cover rounded" onError={(e) => (e.currentTarget.style.display = "none")} />
-                )}
-              </div>
+            <div className="space-y-4">
+              <UploadImagem label="Logo do evento" valor={form.logoUrl} onChange={(url) => set("logoUrl", url)} pasta="eventos" formato="quadrado" />
+              <UploadImagem label="Banner de fundo" valor={form.bannerUrl} onChange={(url) => set("bannerUrl", url)} pasta="eventos" formato="retangulo" />
             </div>
           </section>
 
