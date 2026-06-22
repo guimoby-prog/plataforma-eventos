@@ -30,6 +30,7 @@ model Event {
   sessions     Session[]
   speakers     Speaker[]
   participants Participant[]
+  secoes       Secao[]
 }
 
 model Session {
@@ -115,6 +116,24 @@ model Checkin {
 
   participant Participant @relation(fields: [participantId], references: [id])
   session     Session?    @relation(fields: [sessionId], references: [id])
+}
+
+model Secao {
+  id        String   @id @default(cuid())
+  eventId   String
+  tipo      String   // video | patrocinadores | numeros | depoimentos | faq | texto | banner
+  titulo    String?
+  conteudo  String   // JSON com dados específicos do tipo
+  ordem     Int      @default(0)
+  visivel   Boolean  @default(true)
+  // Visual
+  bgColor   String   @default("#ffffff")
+  textColor String   @default("#111827")
+  padding   String   @default("py-16")
+  align     String   @default("center")
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id])
 }
 
 model Pergunta {
