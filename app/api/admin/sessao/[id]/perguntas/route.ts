@@ -5,7 +5,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params;
   const perguntas = await prisma.pergunta.findMany({
     where: { sessionId: id },
-    include: { participant: { select: { name: true } } },
+    include: { participant: { select: { name: true, email: true } } },
     orderBy: { createdAt: "asc" },
   });
   return NextResponse.json(perguntas);

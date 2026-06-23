@@ -6,12 +6,15 @@ import Link from "next/link";
 type Pergunta = { id: string; texto: string; aprovada: boolean; respondida: boolean; participant: { name: string }; createdAt: Date };
 type OpcaoEnquete = { id: string; texto: string; ordem: number };
 type Enquete = { id: string; pergunta: string; ativa: boolean; opcoes: OpcaoEnquete[]; respostas: { opcaoId: string; id: string; enqueteId: string; participantId: string; createdAt: Date }[] } | null;
-type Sessao = { id: string; title: string; speakers: { name: string; id: string; bio: string | null; photoUrl: string | null; role: string; eventId: string }[]; perguntas: Pergunta[]; enquetes: NonNullable<Enquete>[] };
+type Avaliacao = { nota: number; comentario: string | null };
+type Sessao = { id: string; title: string; speakers: { name: string; id: string; bio: string | null; photoUrl: string | null; role: string; eventId: string }[]; perguntas: Pergunta[]; enquetes: NonNullable<Enquete>[]; avaliacoes?: Avaliacao[] };
 
 export default function PainelModeracao({ sessao: sessaoInicial }: { sessao: Sessao }) {
   const [perguntas, setPerguntas] = useState<Pergunta[]>(sessaoInicial.perguntas);
   const [enquete, setEnquete] = useState<Enquete>(sessaoInicial.enquetes[0] ?? null);
-  const [aba, setAba] = useState<"perguntas" | "enquete">("perguntas");
+  const [aba, setAba] = useState<"perguntas" | "enquete" | "avaliacoes">("perguntas");
+  const avaliacoes = sessaoInicial.avaliacoes ?? [];
+  const mediaAvaliacao = avaliacoes.length > 0 ? avaliacoes.reduce((a, v) => a + v.nota, 0) / avaliacoes.length : null;
   const [novaEnquete, setNovaEnquete] = useState({ pergunta: "", opcoes: ["", ""] });
   const [criandoEnquete, setCriandoEnquete] = useState(false);
 
@@ -90,6 +93,10 @@ export default function PainelModeracao({ sessao: sessaoInicial }: { sessao: Ses
         <button onClick={() => setAba("enquete")}
           className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${aba === "enquete" ? "bg-white shadow text-gray-900" : "text-gray-500"}`}>
           📊 Enquete
+        </button>
+        <button onClick={() => setAba("avaliacoes")}
+          className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${aba === "avaliacoes" ? "bg-white shadow text-gray-900" : "text-gray-500"}`}>
+          ⭐ Avaliações {avaliacoes.length > 0 && `(${avaliacoes.length})`}
         </button>
       </div>
 
@@ -215,6 +222,50 @@ export default function PainelModeracao({ sessao: sessaoInicial }: { sessao: Ses
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {aba === "avaliacoes" && (
+        <div>
+          {avaliacoes.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">
+              <p className="text-4xl mb-3">⭐</p>
+              <p className="text-sm">Nenhuma avaliação recebida ainda.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 text-center shadow-sm">
+                <p className="text-5xl font-black text-gray-900">{mediaAvaliacao?.toFixed(1)}</p>
+                <p className="text-yellow-400 text-2xl mt-1">{"⭐".repeat(Math.round(mediaAvaliacao ?? 0))}</p>
+                <p className="text-sm text-gray-400 mt-1">Média de {avaliacoes.length} avaliação(ões)</p>
+              </div>
+              <div className="grid grid-cols-5 gap-2">
+                {[5, 4, 3, 2, 1].map((nota) => {
+                  const qtd = avaliacoes.filter((a) => a.nota === nota).length;
+                  const pct = avaliacoes.length > 0 ? Math.round((qtd / avaliacoes.length) * 100) : 0;
+                  return (
+                    <div key={nota} className="bg-white rounded-xl border border-gray-100 p-3 text-center shadow-sm">
+                      <p className="text-lg">{"⭐".repeat(nota)}</p>
+                      <p className="font-bold text-gray-900 mt-1">{qtd}</p>
+                      <p className="text-xs text-gray-400">{pct}%</p>
+                    </div>
+                  );
+                })}
+              </div>
+              {avaliacoes.filter((a) => a.comentario).length > 0 && (
+                <div>
+                  <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3">Comentários</h3>
+                  <div className="space-y-2">
+                    {avaliacoes.filter((a) => a.comentario).map((a, i) => (
+                      <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+                        <p className="text-yellow-400 text-sm mb-1">{"⭐".repeat(a.nota)}</p>
+                        <p className="text-sm text-gray-700 italic">"{a.comentario}"</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

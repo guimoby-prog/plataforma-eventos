@@ -10,6 +10,7 @@ export default async function ModeracaoSessao({ params }: { params: Promise<{ id
       speakers: true,
       perguntas: { include: { participant: { select: { name: true } } }, orderBy: { createdAt: "asc" } },
       enquetes: { include: { opcoes: { orderBy: { ordem: "asc" } }, respostas: true }, orderBy: { createdAt: "desc" }, take: 1 },
+      avaliacoes: { select: { nota: true, comentario: true } },
     },
   });
   if (!sessao) notFound();
