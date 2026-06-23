@@ -194,64 +194,96 @@ export default function EditorVisual({ evento }: { evento: Evento }) {
           <a href="/" target="_blank" className="text-xs text-[#00A859] hover:underline">Ver site →</a>
         </div>
 
-        {/* Mini hotsite */}
+        {/* Mini hotsite — espelho do novo design */}
         <div style={{ fontFamily: form.fontFamily }} className="text-sm">
+
           {/* Navbar */}
-          <div className="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+          <div className="px-5 py-3 flex items-center justify-between border-b border-white/10" style={{ background: form.secondaryColor }}>
             <div className="flex items-center gap-2">
               {form.logoUrl ? (
-                <img src={form.logoUrl} alt="logo" className="h-7 object-contain" onError={(e) => (e.currentTarget.style.display="none")} />
+                <img src={form.logoUrl} alt="logo" className="h-7 object-contain" onError={(e) => (e.currentTarget.style.display = "none")} />
               ) : (
-                <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: form.primaryColor }}>
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: form.primaryColor }}>
                   <span className="text-white font-bold text-xs">U</span>
                 </div>
               )}
-              <span className="font-bold text-gray-800 text-sm">{form.heroTitle || evento.name}</span>
+              <div className="leading-tight">
+                <span className="text-[8px] font-bold uppercase tracking-widest block text-white/50">Unimed</span>
+                <span className="text-xs font-bold text-white">{form.heroTitle || evento.name}</span>
+              </div>
             </div>
-            <div className="flex gap-4 text-xs" style={{ color: form.primaryColor }}>
-              <span>Programação</span><span>Palestrantes</span>
-              <span className="text-white px-3 py-1 rounded-lg text-xs font-semibold" style={{ background: form.primaryColor }}>Inscreva-se</span>
+            <div className="flex gap-3 text-[10px] text-white/70 items-center">
+              <span>Programação</span>
+              <span>Palestrantes</span>
+              <span className="text-white px-2.5 py-1 rounded-lg font-bold" style={{ background: form.primaryColor }}>Inscreva-se →</span>
             </div>
           </div>
 
           {/* Hero */}
-          <div className="py-16 px-6 text-center relative overflow-hidden" style={{ background: form.secondaryColor }}>
+          <div className="relative overflow-hidden flex" style={{ background: form.secondaryColor, minHeight: 220 }}>
             {form.bannerUrl && (
-              <img src={form.bannerUrl} alt="banner" className="absolute inset-0 w-full h-full object-cover opacity-20" onError={(e) => (e.currentTarget.style.display="none")} />
+              <img src={form.bannerUrl} alt="banner" className="absolute inset-0 w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
             )}
-            <div className="relative z-10">
-              <h1 className="text-2xl font-bold text-white mb-2">{form.heroTitle || evento.name}</h1>
-              {evento.location && <p className="text-xs mb-2" style={{ color: `${form.primaryColor}99` }}>📍 {evento.location}</p>}
-              <p className="text-xs text-white/70 max-w-sm mx-auto mb-4">{form.heroSubtitle || evento.description}</p>
-              <span className="inline-block text-white text-xs font-semibold px-4 py-2 rounded-lg" style={{ background: form.primaryColor }}>
-                Garantir minha vaga
-              </span>
+            <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, ${form.secondaryColor}f0 45%, ${form.secondaryColor}80 70%, transparent 100%)` }} />
+            <div className="relative z-10 flex w-full px-6 py-8 gap-4 items-center">
+              {/* Esquerda */}
+              <div className="flex-1 text-white">
+                <div className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 rounded-full border border-white/20 text-[9px] text-white/70" style={{ background: "rgba(255,255,255,0.07)" }}>
+                  <span style={{ color: form.primaryColor }}>●</span> Data do evento
+                </div>
+                <h1 className="text-xl font-black leading-tight mb-1">{form.heroTitle || evento.name}</h1>
+                {evento.location && <p className="text-[10px] text-white/60 mb-2">📍 {evento.location}</p>}
+                {form.heroSubtitle && <p className="text-[10px] text-white/60 leading-relaxed mb-4 max-w-[180px]">{form.heroSubtitle}</p>}
+                <span className="inline-block text-white text-[10px] font-bold px-4 py-2 rounded-lg shadow" style={{ background: form.primaryColor }}>
+                  Garantir minha vaga →
+                </span>
+              </div>
+              {/* Card direita */}
+              <div className="shrink-0 w-36 rounded-2xl p-4 border border-white/20 shadow-xl" style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)" }}>
+                <p className="text-white font-bold text-xs mb-1">Inscrições abertas!</p>
+                <p className="text-white/60 text-[9px] mb-3">Garanta sua vaga neste evento exclusivo.</p>
+                {["Programação completa", "Networking", "Certificado"].map((item) => (
+                  <div key={item} className="flex items-center gap-1 text-[9px] text-white/70 mb-1">
+                    <span style={{ color: form.primaryColor }}>✓</span> {item}
+                  </div>
+                ))}
+                <div className="mt-3 text-center text-white text-[9px] font-bold py-2 rounded-lg" style={{ background: form.primaryColor }}>
+                  Inscrever-se →
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Programação placeholder */}
-          <div className="px-6 py-8 bg-gray-50">
-            <h2 className="text-base font-bold text-center text-gray-800 mb-4">Programação</h2>
+          <div className="px-6 py-6 bg-gray-50">
+            <div className="text-center mb-4">
+              <span className="text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full" style={{ background: `${form.primaryColor}15`, color: form.primaryColor }}>Agenda</span>
+              <h2 className="text-sm font-black text-gray-900 mt-1">Programação</h2>
+            </div>
             <div className="space-y-2 max-w-lg mx-auto">
-              {["09:00 — Abertura Oficial", "10:00 — Palestra Principal", "14:00 — Mesa Redonda"].map((s) => (
-                <div key={s} className="bg-white rounded-lg px-4 py-2.5 flex items-center gap-3 border border-gray-100">
-                  <span className="text-xs font-bold" style={{ color: form.primaryColor }}>{s.split("—")[0]}</span>
-                  <span className="text-xs text-gray-700">{s.split("—")[1]}</span>
+              {[["09:00", "10:00", "Abertura Oficial"], ["10:00", "11:30", "Palestra Principal"], ["14:00", "15:30", "Mesa Redonda"]].map(([ini, fim, titulo]) => (
+                <div key={titulo} className="bg-white rounded-xl px-4 py-2.5 flex items-center gap-3 border border-gray-100 shadow-sm">
+                  <div className="text-center min-w-[36px]">
+                    <span className="text-[10px] font-black block" style={{ color: form.primaryColor }}>{ini}</span>
+                    <span className="text-[9px] text-gray-400">{fim}</span>
+                  </div>
+                  <span className="text-xs font-semibold text-gray-800">{titulo}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* CTA */}
-          <div className="py-8 px-6 text-center text-white" style={{ background: form.primaryColor }}>
-            <h2 className="text-base font-bold mb-2">Não perca esta oportunidade</h2>
-            <span className="inline-block text-xs font-semibold px-4 py-2 rounded-lg bg-white" style={{ color: form.secondaryColor }}>
-              Fazer inscrição
+          {/* CTA final */}
+          <div className="py-8 px-6 text-center text-white relative overflow-hidden" style={{ background: form.secondaryColor }}>
+            <h2 className="text-sm font-black mb-1">Não perca esta oportunidade</h2>
+            <p className="text-[10px] text-white/60 mb-3">Vagas limitadas. Inscreva-se agora.</p>
+            <span className="inline-block text-white text-[10px] font-black px-5 py-2 rounded-xl" style={{ background: form.primaryColor }}>
+              Fazer inscrição →
             </span>
           </div>
 
           {/* Footer */}
-          <div className="py-4 px-6 text-center text-xs text-gray-400 bg-gray-900">
+          <div className="py-4 px-6 text-center text-[10px] text-gray-500 bg-[#0a0a0a]">
             {form.footerText || `© ${new Date().getFullYear()} ${evento.name}. Todos os direitos reservados.`}
           </div>
         </div>
