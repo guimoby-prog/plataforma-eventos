@@ -37,6 +37,9 @@ export default async function Eventos() {
               {evento.location && <p className="text-sm text-gray-400 mt-0.5">{evento.location}</p>}
             </div>
             <div className="flex items-center gap-3">
+              <Link href={`/admin/eventos/${evento.id}/builder`} className="text-sm font-bold text-orange-500 hover:underline whitespace-nowrap">
+                🏗️ Builder
+              </Link>
               <Link href={`/admin/eventos/${evento.id}/secoes`} className="text-sm font-medium text-purple-600 hover:underline whitespace-nowrap">
                 🧩 Seções
               </Link>

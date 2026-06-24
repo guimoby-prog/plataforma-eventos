@@ -11,6 +11,63 @@ type ConteudoTexto = { texto: string };
 type ConteudoLista = { items: ItemSimples[] };
 type ConteudoAny = ConteudoVideo | ConteudoBanner | ConteudoTexto | ConteudoLista;
 
+// ─── Builder renderer ──────────────────────────────────────────────────────────
+type Bloco = { id: string; tipo: string; texto?: string; fontSize?: string; fontWeight?: string; cor?: string; align?: string; src?: string; alt?: string; largura?: string; arredondado?: string; sombra?: boolean; label?: string; href?: string; corFundo?: string; corTexto?: string; tamanho?: string; larguraTotal?: boolean; url?: string; corLinha?: string; espessura?: string; altura?: string };
+type ColunaBuilder = { id: string; blocos: Bloco[] };
+type ConteudoBuilder = { layout: string; colunas: ColunaBuilder[]; bgColor: string; textColor: string; padding: string };
+
+const LAYOUT_WIDTHS: Record<string, string[]> = {
+  "1": ["flex-1"],
+  "2-eq": ["flex-1", "flex-1"],
+  "2-wide-left": ["flex-[2]", "flex-1"],
+  "2-wide-right": ["flex-1", "flex-[2]"],
+  "3": ["flex-1", "flex-1", "flex-1"],
+};
+
+function BlocoRender({ bloco }: { bloco: Bloco }) {
+  const alignClass = bloco.align === "center" ? "text-center" : bloco.align === "right" ? "text-right" : "text-left";
+  if (bloco.tipo === "heading") {
+    return <p className={`font-${bloco.fontWeight ?? "bold"} text-${bloco.fontSize ?? "2xl"} ${alignClass} leading-tight`} style={{ color: bloco.cor ?? "inherit" }}>{bloco.texto}</p>;
+  }
+  if (bloco.tipo === "texto") {
+    return <p className={`text-${bloco.fontSize ?? "base"} font-${bloco.fontWeight ?? "normal"} ${alignClass} leading-relaxed whitespace-pre-line`} style={{ color: bloco.cor ?? "inherit" }}>{bloco.texto}</p>;
+  }
+  if (bloco.tipo === "imagem" && bloco.src) {
+    const w = bloco.largura === "3/4" ? "75%" : bloco.largura === "1/2" ? "50%" : bloco.largura === "1/3" ? "33%" : "100%";
+    return <div style={{ width: w, margin: "0 auto" }}><img src={bloco.src} alt={bloco.alt ?? ""} className={`w-full object-cover rounded-${bloco.arredondado ?? "lg"} ${bloco.sombra ? "shadow-lg" : ""}`} /></div>;
+  }
+  if (bloco.tipo === "botao" && bloco.label) {
+    const sz = bloco.tamanho === "sm" ? "px-4 py-2 text-sm" : bloco.tamanho === "lg" ? "px-8 py-4 text-lg" : "px-6 py-3";
+    return <div className={alignClass}><a href={bloco.href ?? "#"} className={`inline-block font-semibold rounded-xl ${sz} ${bloco.larguraTotal ? "w-full text-center block" : ""}`} style={{ background: bloco.corFundo ?? "#00A859", color: bloco.corTexto ?? "#fff" }}>{bloco.label}</a></div>;
+  }
+  if (bloco.tipo === "video" && bloco.url) {
+    const emb = bloco.url.includes("youtu.be/") ? bloco.url.replace("youtu.be/", "www.youtube.com/embed/") : bloco.url.replace("watch?v=", "embed/");
+    return <div className="relative w-full rounded-xl overflow-hidden" style={{ paddingBottom: "56.25%" }}><iframe src={emb} className="absolute inset-0 w-full h-full" allowFullScreen /></div>;
+  }
+  if (bloco.tipo === "divisor") {
+    return <hr style={{ borderColor: bloco.corLinha ?? "#e5e7eb", borderTopWidth: `${bloco.espessura ?? 1}px` }} />;
+  }
+  if (bloco.tipo === "espaco") {
+    return <div style={{ height: `${bloco.altura ?? 8}px` }} />;
+  }
+  return null;
+}
+
+function SecaoBuilder({ c, s }: { c: ConteudoBuilder; s: { bgColor: string; textColor: string; padding: string } }) {
+  const widths = LAYOUT_WIDTHS[c.layout] ?? ["flex-1"];
+  return (
+    <div className={`${c.padding ?? s.padding} px-6 max-w-7xl mx-auto`}>
+      <div className="flex gap-8 flex-wrap md:flex-nowrap">
+        {c.colunas.map((col, i) => (
+          <div key={col.id} className={`${widths[i] ?? "flex-1"} min-w-0 space-y-4`}>
+            {col.blocos.map((bloco) => <BlocoRender key={bloco.id} bloco={bloco} />)}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function SecaoVideo({ c, titulo }: { c: ConteudoVideo; titulo: string | null }) {
   if (!c.url) return null;
   const embedUrl = c.url.includes("youtube.com/watch")
@@ -182,6 +239,15 @@ export default async function Home() {
   const footerText = evento.footerText || `© ${new Date().getFullYear()} ${evento.name}. Todos os direitos reservados.`;
 
   function renderSecao(s: (typeof secoes)[0]) {
+    if (s.tipo === "builder") {
+      let cb: ConteudoBuilder;
+      try { cb = JSON.parse(s.conteudo || "{}") as ConteudoBuilder; } catch { return null; }
+      return (
+        <section key={s.id} style={{ background: cb.bgColor ?? s.bgColor, color: s.textColor }}>
+          <SecaoBuilder c={cb} s={s} />
+        </section>
+      );
+    }
     const c = JSON.parse(s.conteudo || "{}") as ConteudoAny;
     const alignClass = s.align === "left" ? "text-left" : s.align === "right" ? "text-right" : "text-center";
     return (
