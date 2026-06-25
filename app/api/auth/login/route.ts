@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { criarOtp, enviarEmailOtp } from "@/lib/otp";
 import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
@@ -29,10 +28,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ erro: "E-mail ou senha incorretos." }, { status: 401 });
     }
 
-    const codigo = await criarOtp(email);
-    await enviarEmailOtp(email, participante.name, codigo);
-
-    return NextResponse.json({ sucesso: true, nome: participante.name });
+    const response = NextResponse.json({ sucesso: true, nome: participante.name });
+    response.cookies.set("participante_id", participante.id, {
+      httpOnly: true,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    return response;
   } catch (err) {
     console.error("[login] erro:", err);
     return NextResponse.json({ erro: "Erro interno. Tente novamente." }, { status: 500 });
