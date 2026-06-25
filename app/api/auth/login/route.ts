@@ -10,13 +10,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ erro: "E-mail e senha são obrigatórios." }, { status: 400 });
     }
 
-    const evento = await prisma.event.findFirst({ where: { isPublished: true } });
-    if (!evento) {
-      return NextResponse.json({ erro: "Nenhum evento ativo." }, { status: 404 });
-    }
-
-    const participante = await prisma.participant.findUnique({
-      where: { eventId_email: { eventId: evento.id, email } },
+    // Busca participante pelo e-mail em qualquer evento
+    const participante = await prisma.participant.findFirst({
+      where: { email },
     });
 
     if (!participante || !participante.password) {
