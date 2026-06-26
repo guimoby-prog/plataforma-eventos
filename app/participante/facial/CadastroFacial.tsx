@@ -23,35 +23,35 @@ export default function CadastroFacial({ nome, jaTemFace, fotoAtual }: {
     setStatus("carregando");
     setMensagem("Carregando modelos de reconhecimento facial...");
     try {
+      // Primeiro abre a câmera e muda status para "detectando" (renderiza o <video>)
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+      streamRef.current = stream;
+      setStatus("detectando");
+      setMensagem("Carregando modelos de reconhecimento...");
+
+      // Carrega modelos em paralelo enquanto o vídeo já renderiza
       const faceapi = await import("face-api.js");
       await Promise.all([
         faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
         faceapi.nets.faceLandmark68TinyNet.loadFromUri("/models"),
         faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
       ]);
-      setStatus("pronto");
-      setMensagem("Modelos carregados. Iniciando câmera...");
-      await abrirCamera();
-    } catch {
+      setMensagem("Posicione seu rosto na câmera e clique em Capturar.");
+    } catch (e: unknown) {
       setStatus("erro");
-      setMensagem("Erro ao carregar modelos. Tente novamente.");
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.includes("Permission") || msg.includes("NotAllowed") || msg.includes("denied")) {
+        setMensagem("Permissão de câmera negada. Clique no ícone de câmera na barra do navegador e permita o acesso.");
+      } else if (msg.includes("NotFound") || msg.includes("DevicesNotFound")) {
+        setMensagem("Nenhuma câmera encontrada neste dispositivo.");
+      } else {
+        setMensagem("Não foi possível acessar a câmera. Verifique as permissões do navegador.");
+      }
     }
   }
 
   async function abrirCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      setStatus("detectando");
-      setMensagem("Posicione seu rosto na câmera e clique em Capturar.");
-    } catch {
-      setStatus("erro");
-      setMensagem("Não foi possível acessar a câmera.");
-    }
+    // mantido por compatibilidade — não usado mais
   }
 
   async function capturar() {
@@ -113,6 +113,14 @@ export default function CadastroFacial({ nome, jaTemFace, fotoAtual }: {
     setStatus("idle");
     setMensagem("");
   }
+
+  // Conecta o stream ao elemento <video> assim que ele aparecer no DOM
+  useEffect(() => {
+    if (status === "detectando" && streamRef.current && videoRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+      videoRef.current.play().catch(() => {});
+    }
+  }, [status]);
 
   useEffect(() => {
     return () => { streamRef.current?.getTracks().forEach((t) => t.stop()); };
