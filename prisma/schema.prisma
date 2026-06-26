@@ -27,6 +27,9 @@ model Event {
   heroSubtitle   String?
   footerText     String?
 
+  // Webapp do participante
+  webappConfig   String?  @default("{}")
+
   sessions     Session[]
   speakers     Speaker[]
   participants Participant[]

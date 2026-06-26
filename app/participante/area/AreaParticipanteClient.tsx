@@ -44,6 +44,17 @@ type Participante = {
   checkins: Checkin[];
 };
 
+type WebappConfig = {
+  corPrimaria?: string;
+  corTopbar?: string;
+  corFundo?: string;
+  mensagemBoasVindas?: string;
+  abasVisiveis?: string[];
+  logoUrl?: string;
+  exibirNomeEvento?: boolean;
+  textoRodape?: string;
+};
+
 type Props = {
   participante: Participante;
   sessoes: Sessao[];
@@ -53,6 +64,7 @@ type Props = {
   badges: Badge[];
   aoVivo: Sessao[];
   proximas: Sessao[];
+  webappConfig?: Record<string, unknown>;
 };
 
 const TABS = [
@@ -64,10 +76,20 @@ const TABS = [
 ];
 
 export default function AreaParticipanteClient({
-  participante, sessoes, ranking, meusPontos, minhaPos, badges, aoVivo, proximas,
+  participante, sessoes, ranking, meusPontos, minhaPos, badges, aoVivo, proximas, webappConfig,
 }: Props) {
   const [aba, setAba] = useState("inicio");
   const [menuAberto, setMenuAberto] = useState(false);
+
+  const cfg = (webappConfig ?? {}) as WebappConfig;
+  const primary = cfg.corPrimaria || "#00A859";
+  const topbarBg = cfg.corTopbar || "#ffffff";
+  const fundoBg = cfg.corFundo || "#f9fafb";
+  const abasVisiveis = cfg.abasVisiveis ?? ["programacao", "feira", "conquistas", "credenciamento"];
+  const boasVindas = cfg.mensagemBoasVindas || "";
+  const logoWebapp = cfg.logoUrl || "";
+  const exibirNome = cfg.exibirNomeEvento !== false;
+  const textoRodape = cfg.textoRodape || "";
 
   const inicial = participante.name.charAt(0).toUpperCase();
   const foto = participante.fotoFace;
@@ -79,20 +101,37 @@ export default function AreaParticipanteClient({
   }
   const conquistados = badges.filter((b) => b.conquistado).length;
 
+  const TABS_FILTRADAS = [
+    { id: "inicio", emoji: "🏠", label: "Início" },
+    ...TABS.slice(1).filter((t) => abasVisiveis.includes(t.id)),
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: fundoBg }}>
       {/* Topbar */}
-      <header className="bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between sticky top-0 z-30">
+      <header className="px-4 h-14 flex items-center justify-between sticky top-0 z-30 border-b border-black/5" style={{ background: topbarBg }}>
         <div className="flex items-center gap-3">
           <button
-            className="md:hidden text-gray-500 hover:text-gray-800 p-1"
+            className="md:hidden p-1"
+            style={{ color: topbarBg === "#ffffff" || topbarBg === "#fff" ? "#6b7280" : "#fff" }}
             onClick={() => setMenuAberto(!menuAberto)}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={menuAberto ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
             </svg>
           </button>
-          <Link href="/" className="text-[#00A859] font-bold text-lg tracking-tight">Área do Participante</Link>
+          {logoWebapp ? (
+            <img src={logoWebapp} alt="logo" className="h-8 object-contain" />
+          ) : (
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: primary }}>
+              <svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6V7z" fill="white" /></svg>
+            </div>
+          )}
+          {exibirNome && (
+            <span className="font-bold text-sm hidden sm:block" style={{ color: topbarBg === "#ffffff" || topbarBg === "#fff" ? "#111" : "#fff" }}>
+              Área do Participante
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <div className="hidden sm:block text-right">
@@ -139,15 +178,13 @@ export default function AreaParticipanteClient({
 
           {/* Navegação */}
           <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-            {TABS.map((tab) => (
+            {TABS_FILTRADAS.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => { setAba(tab.id); setMenuAberto(false); }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left
-                  ${aba === tab.id
-                    ? "bg-[#00A859] text-white shadow-sm"
-                    : "text-gray-600 hover:bg-gray-100"
-                  }`}
+                  ${aba === tab.id ? "text-white shadow-sm" : "text-gray-600 hover:bg-gray-100"}`}
+                style={aba === tab.id ? { background: primary } : {}}
               >
                 <span className="text-base">{tab.emoji}</span>
                 {tab.label}
@@ -181,6 +218,12 @@ export default function AreaParticipanteClient({
                 <h1 className="text-2xl font-bold text-gray-900">Olá, {participante.name.split(" ")[0]}! 👋</h1>
                 <p className="text-gray-500 text-sm mt-1">{participante.event.name}</p>
               </div>
+
+              {boasVindas && (
+                <div className="rounded-2xl px-5 py-4 text-sm leading-relaxed" style={{ background: `${primary}15`, color: primary, border: `1px solid ${primary}30` }}>
+                  {boasVindas}
+                </div>
+              )}
 
               {/* Dados do participante */}
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">

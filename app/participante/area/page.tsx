@@ -28,6 +28,14 @@ export default async function AreaParticipante() {
 
   const agora = new Date();
 
+  // Configuração do webapp
+  const evento = await prisma.event.findUnique({
+    where: { id: participante.eventId },
+    select: { webappConfig: true, primaryColor: true },
+  });
+  let webappConfig: Record<string, unknown> = {};
+  try { webappConfig = JSON.parse(evento?.webappConfig ?? "{}"); } catch { /* */ }
+
   const sessoes = await prisma.session.findMany({
     where: { eventId: participante.eventId },
     include: { speakers: true },
@@ -129,6 +137,7 @@ export default async function AreaParticipante() {
       badges={badges}
       aoVivo={aoVivoSer}
       proximas={proximasSer}
+      webappConfig={webappConfig}
     />
   );
 }
