@@ -268,52 +268,52 @@ export default async function Home() {
       <Navbar eventName={evento.name} primaryColor={primary} secondaryColor={secondary} logoUrl={evento.logoUrl} />
 
       {/* Hero fullscreen */}
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden" style={{ background: secondary }}>
+      <section className="relative min-h-[100svh] sm:min-h-[92vh] flex items-center overflow-hidden" style={{ background: secondary }}>
         {/* Fundo com banner */}
         {evento.bannerUrl && (
           <img src={evento.bannerUrl} alt="banner" className="absolute inset-0 w-full h-full object-cover" />
         )}
         {/* Overlay gradiente */}
-        <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, ${secondary}f0 45%, ${secondary}90 65%, transparent 100%)` }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, ${secondary}f5 50%, ${secondary}a0 70%, transparent 100%)` }} />
         {/* Detalhes decorativos */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-10 -translate-y-1/3 translate-x-1/3" style={{ background: primary }} />
-        <div className="absolute bottom-0 left-1/3 w-[300px] h-[300px] rounded-full opacity-5 translate-y-1/2" style={{ background: primary }} />
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full opacity-10 -translate-y-1/3 translate-x-1/3" style={{ background: primary }} />
+        <div className="absolute bottom-0 left-1/3 w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] rounded-full opacity-5 translate-y-1/2" style={{ background: primary }} />
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 py-16 sm:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
             {/* Conteúdo esquerdo */}
             <div className="text-white">
               {dataFormatada && (
-                <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-white/20 text-sm font-medium text-white/80" style={{ background: "rgba(255,255,255,0.08)" }}>
+                <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-white/20 text-xs sm:text-sm font-medium text-white/80" style={{ background: "rgba(255,255,255,0.08)" }}>
                   <span style={{ color: primary }}>●</span> {dataFormatada}
                 </div>
               )}
-              <h1 className="text-5xl lg:text-6xl font-black leading-tight mb-6">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-tight mb-5">
                 {heroTitle}
               </h1>
               {evento.location && (
-                <p className="flex items-center gap-2 text-white/70 mb-4 text-lg">
+                <p className="flex items-center gap-2 text-white/70 mb-3 text-base sm:text-lg">
                   <span>📍</span> {evento.location}
                 </p>
               )}
               {heroSubtitle && (
-                <p className="text-white/70 text-lg leading-relaxed mb-8 max-w-lg">{heroSubtitle}</p>
+                <p className="text-white/70 text-base sm:text-lg leading-relaxed mb-7 max-w-lg">{heroSubtitle}</p>
               )}
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/inscricao"
-                  className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-xl text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all text-white"
+                  className="inline-flex items-center justify-center gap-2 font-bold px-6 py-3.5 sm:px-8 sm:py-4 rounded-xl text-base sm:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all text-white"
                   style={{ background: primary }}>
                   Garantir minha vaga →
                 </Link>
                 <Link href="#programacao"
-                  className="inline-flex items-center gap-2 font-semibold px-8 py-4 rounded-xl text-lg border border-white/30 text-white hover:bg-white/10 transition-colors">
+                  className="inline-flex items-center justify-center gap-2 font-semibold px-6 py-3.5 sm:px-8 sm:py-4 rounded-xl text-base sm:text-lg border border-white/30 text-white hover:bg-white/10 transition-colors">
                   Ver programação
                 </Link>
               </div>
             </div>
 
-            {/* Card de inscrição direito */}
+            {/* Card de inscrição direito — só desktop */}
             <div className="lg:flex justify-end hidden">
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 max-w-sm w-full shadow-2xl">
                 <h3 className="text-white font-bold text-2xl mb-2">Inscrições abertas!</h3>
@@ -335,11 +335,25 @@ export default async function Home() {
                 </Link>
               </div>
             </div>
+
+            {/* Card mobile — só aparece em telas pequenas */}
+            <div className="lg:hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 w-full shadow-xl">
+              <div className="space-y-2 mb-4">
+                {["Acesso completo à programação", "Networking com especialistas", "Certificado de participação"].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-white/80 text-sm">
+                    <span style={{ color: primary }}>✓</span> {item}
+                  </div>
+                ))}
+              </div>
+              <Link href="/participante/area" className="block text-center text-white/60 text-sm">
+                Já tenho inscrição — <span className="underline">Entrar</span>
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/40 animate-bounce text-2xl">↓</div>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 animate-bounce text-xl">↓</div>
       </section>
 
       {/* Programação */}
@@ -359,9 +373,9 @@ export default async function Home() {
                   <h3 className="text-lg font-bold text-gray-800 capitalize">{dia}</h3>
                   <div className="flex-1 h-px bg-gray-200" />
                 </div>
-                <div className="space-y-3 ml-14">
+                <div className="space-y-3 ml-0 sm:ml-14">
                   {items.map((s) => (
-                    <div key={s.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex gap-4 items-start hover:shadow-md transition-shadow">
+                    <div key={s.id} className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100 flex gap-3 sm:gap-4 items-start hover:shadow-md transition-shadow">
                       <div className="shrink-0 text-center min-w-[56px]">
                         <span className="font-black text-sm block" style={{ color: primary }}>
                           {s.startTime ? new Date(s.startTime).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "—"}
@@ -430,11 +444,11 @@ export default async function Home() {
           <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full -translate-y-1/2" style={{ background: primary }} />
           <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full translate-y-1/2" style={{ background: primary }} />
         </div>
-        <div className="relative z-10 max-w-2xl mx-auto">
-          <h2 className="text-4xl font-black mb-4">Não perca esta oportunidade</h2>
-          <p className="mb-10 text-lg opacity-70 leading-relaxed">Vagas limitadas. Inscreva-se agora e garanta sua participação neste evento exclusivo.</p>
+        <div className="relative z-10 max-w-2xl mx-auto px-4">
+          <h2 className="text-2xl sm:text-4xl font-black mb-4">Não perca esta oportunidade</h2>
+          <p className="mb-8 text-base sm:text-lg opacity-70 leading-relaxed">Vagas limitadas. Inscreva-se agora e garanta sua participação neste evento exclusivo.</p>
           <Link href="/inscricao"
-            className="inline-block font-black px-10 py-5 rounded-2xl text-xl shadow-2xl hover:scale-105 transition-transform"
+            className="inline-block font-black px-7 py-4 sm:px-10 sm:py-5 rounded-2xl text-lg sm:text-xl shadow-2xl hover:scale-105 transition-transform"
             style={{ background: primary, color: "white" }}>
             Fazer inscrição →
           </Link>
