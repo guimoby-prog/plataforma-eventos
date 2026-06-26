@@ -18,6 +18,7 @@ export default function CadastroFacial({ nome, jaTemFace, fotoAtual }: {
   const [mensagem, setMensagem] = useState("");
   const [fotoCapturada, setFotoCapturada] = useState<string | null>(null);
   const [descritores, setDescritores] = useState<number[] | null>(null);
+  const [modelosOk, setModelosOk] = useState(false);
 
   async function carregarModelos() {
     setStatus("carregando");
@@ -29,14 +30,15 @@ export default function CadastroFacial({ nome, jaTemFace, fotoAtual }: {
       setStatus("detectando");
       setMensagem("Carregando modelos de reconhecimento...");
 
-      // Carrega modelos em paralelo enquanto o vídeo já renderiza
+      // Carrega modelos enquanto o vídeo já aparece
       const faceapi = await import("face-api.js");
       await Promise.all([
         faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
         faceapi.nets.faceLandmark68TinyNet.loadFromUri("/models"),
         faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
       ]);
-      setMensagem("Posicione seu rosto na câmera e clique em Capturar.");
+      setModelosOk(true);
+      setMensagem("✅ Pronto! Posicione seu rosto e clique em Capturar.");
     } catch (e: unknown) {
       setStatus("erro");
       const msg = e instanceof Error ? e.message : "";
@@ -110,6 +112,7 @@ export default function CadastroFacial({ nome, jaTemFace, fotoAtual }: {
   function recapturar() {
     setFotoCapturada(null);
     setDescritores(null);
+    setModelosOk(false);
     setStatus("idle");
     setMensagem("");
   }
@@ -196,9 +199,9 @@ export default function CadastroFacial({ nome, jaTemFace, fotoAtual }: {
             )}
 
             {status === "detectando" && (
-              <button onClick={capturar}
-                className="w-full bg-[#00A859] text-white font-semibold py-3 rounded-xl hover:bg-[#008C45] transition-colors">
-                📸 Capturar rosto
+              <button onClick={capturar} disabled={!modelosOk}
+                className="w-full bg-[#00A859] text-white font-semibold py-3 rounded-xl hover:bg-[#008C45] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                {modelosOk ? "📸 Capturar rosto" : "⏳ Carregando modelos..."}
               </button>
             )}
 
