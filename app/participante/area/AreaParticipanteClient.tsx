@@ -37,6 +37,7 @@ type Participante = {
   phone: string | null;
   document: string | null;
   qrCode: string;
+  fotoFace: string | null;
   category: { name: string };
   event: { name: string };
   visitas: Visita[];
@@ -69,6 +70,13 @@ export default function AreaParticipanteClient({
   const [menuAberto, setMenuAberto] = useState(false);
 
   const inicial = participante.name.charAt(0).toUpperCase();
+  const foto = participante.fotoFace;
+
+  function Avatar({ size }: { size: "sm" | "md" | "lg" }) {
+    const sizes = { sm: "w-9 h-9 text-sm", md: "w-11 h-11 text-lg", lg: "w-14 h-14 text-2xl" };
+    if (foto) return <img src={foto} alt={participante.name} className={`${sizes[size]} rounded-full object-cover border-2 border-white/30 shrink-0`} />;
+    return <div className={`${sizes[size]} rounded-full bg-[#00A859] flex items-center justify-center text-white font-bold shrink-0`}>{inicial}</div>;
+  }
   const conquistados = badges.filter((b) => b.conquistado).length;
 
   return (
@@ -91,9 +99,7 @@ export default function AreaParticipanteClient({
             <p className="text-sm font-medium text-gray-800 leading-tight">{participante.name}</p>
             <p className="text-xs text-gray-400">{participante.event.name}</p>
           </div>
-          <div className="w-9 h-9 rounded-full bg-[#00A859] flex items-center justify-center text-white font-bold text-sm shrink-0">
-            {inicial}
-          </div>
+          <Avatar size="sm" />
           <LogoutButton />
         </div>
       </header>
@@ -108,9 +114,7 @@ export default function AreaParticipanteClient({
           {/* Perfil na sidebar */}
           <div className="p-5 border-b border-gray-100">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-[#00A859] flex items-center justify-center text-white font-bold text-lg shrink-0">
-                {inicial}
-              </div>
+              <Avatar size="md" />
               <div className="min-w-0">
                 <p className="font-semibold text-gray-900 text-sm truncate">{participante.name}</p>
                 <p className="text-xs text-gray-400 truncate">{participante.category.name}</p>

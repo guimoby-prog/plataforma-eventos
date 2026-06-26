@@ -21,7 +21,9 @@ export default async function AreaParticipante() {
         orderBy: { createdAt: "desc" },
       },
     },
+    // fotoFace e faceDescriptor já estão no modelo
   });
+
   if (!participante) redirect("/login");
 
   const agora = new Date();
@@ -102,6 +104,7 @@ export default async function AreaParticipante() {
     phone: participante.phone,
     document: participante.document,
     qrCode: participante.qrCode,
+    fotoFace: participante.fotoFace ?? null,
     category: { name: participante.category.name },
     event: { name: participante.event.name },
     visitas: participante.visitas.map((v) => ({

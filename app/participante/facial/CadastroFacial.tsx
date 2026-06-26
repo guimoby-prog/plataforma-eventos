@@ -144,12 +144,16 @@ export default function CadastroFacial({ nome, jaTemFace, fotoAtual }: {
             <p className="text-sm text-gray-500 mt-1">Olá, <strong>{nome}</strong>! Cadastre seu rosto para agilizar o credenciamento.</p>
           </div>
 
-          {/* Foto atual */}
-          {jaTemFace && status === "idle" && fotoAtual && (
+          {/* Já cadastrado — bloqueado */}
+          {jaTemFace && status === "idle" && (
             <div className="mb-5 text-center">
-              <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-2">Foto cadastrada</p>
-              <img src={fotoAtual} alt="Foto facial" className="w-32 h-32 rounded-full object-cover mx-auto border-4 border-[#00A859]" />
-              <p className="text-xs text-[#00A859] font-medium mt-2">✓ Identificação facial ativa</p>
+              {fotoAtual && (
+                <img src={fotoAtual} alt="Foto facial" className="w-32 h-32 rounded-full object-cover mx-auto border-4 border-[#00A859] mb-3" />
+              )}
+              <div className="bg-green-50 border border-green-100 rounded-2xl px-4 py-3">
+                <p className="text-sm font-semibold text-[#00A859]">✓ Identificação facial já cadastrada</p>
+                <p className="text-xs text-gray-500 mt-1">O cadastro facial é único e não pode ser alterado. Em caso de problemas, entre em contato com a organização do evento.</p>
+              </div>
             </div>
           )}
 
@@ -191,10 +195,10 @@ export default function CadastroFacial({ nome, jaTemFace, fotoAtual }: {
 
           {/* Botões */}
           <div className="space-y-3">
-            {(status === "idle") && (
+            {status === "idle" && !jaTemFace && (
               <button onClick={carregarModelos}
                 className="w-full bg-[#00A859] text-white font-semibold py-3 rounded-xl hover:bg-[#008C45] transition-colors">
-                {jaTemFace ? "Atualizar identificação facial" : "Iniciar cadastro facial"}
+                Iniciar cadastro facial
               </button>
             )}
 
