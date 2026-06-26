@@ -50,6 +50,64 @@ export default async function AreaParticipante() {
   const meusPontos = participante.visitas.reduce((acc, v) => acc + v.expositor.pontos, 0);
   const minhaPos = ranking.findIndex((r) => r.id === participanteId) + 1;
 
+  // Dados para badges
+  const totalExpositores = await prisma.expositor.count({ where: { eventId: participante.eventId } });
+  const minhaAvaliacao = await prisma.avaliacao.findFirst({ where: { participantId: participanteId } });
+  const minhaPergunta = await prisma.pergunta.findFirst({ where: { participantId: participanteId, aprovada: true } });
+
+  type Badge = { id: string; emoji: string; titulo: string; descricao: string; conquistado: boolean };
+  const badges: Badge[] = [
+    {
+      id: "primeiro-estande",
+      emoji: "🥇",
+      titulo: "Pioneiro",
+      descricao: "Visitou o primeiro estande",
+      conquistado: participante.visitas.length >= 1,
+    },
+    {
+      id: "tres-estandes",
+      emoji: "🔥",
+      titulo: "Em chamas",
+      descricao: "Visitou 3 estandes",
+      conquistado: participante.visitas.length >= 3,
+    },
+    {
+      id: "cinco-estandes",
+      emoji: "⚡",
+      titulo: "Networker",
+      descricao: "Visitou 5 estandes",
+      conquistado: participante.visitas.length >= 5,
+    },
+    {
+      id: "todos-estandes",
+      emoji: "🎯",
+      titulo: "Explorador",
+      descricao: "Visitou todos os estandes",
+      conquistado: totalExpositores > 0 && participante.visitas.length >= totalExpositores,
+    },
+    {
+      id: "avaliou-sessao",
+      emoji: "⭐",
+      titulo: "Crítico",
+      descricao: "Avaliou uma sessão",
+      conquistado: !!minhaAvaliacao,
+    },
+    {
+      id: "pergunta-aprovada",
+      emoji: "💬",
+      titulo: "Questionador",
+      descricao: "Teve uma pergunta aprovada",
+      conquistado: !!minhaPergunta,
+    },
+    {
+      id: "top3",
+      emoji: "🏆",
+      titulo: "Pódio",
+      descricao: "Chegou ao top 3 do ranking",
+      conquistado: minhaPos >= 1 && minhaPos <= 3,
+    },
+  ];
+
   const aoVivo = sessoes.filter(
     (s) => s.startTime && s.endTime && s.startTime <= agora && s.endTime >= agora
   );
@@ -120,6 +178,24 @@ export default async function AreaParticipante() {
             )}
           </div>
         )}
+
+        {/* Badges */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h2 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">🏅 Conquistas</h2>
+          <p className="text-xs text-gray-400 mb-4">{badges.filter(b => b.conquistado).length} de {badges.length} desbloqueadas</p>
+          <div className="grid grid-cols-4 gap-3">
+            {badges.map((b) => (
+              <div key={b.id} className={`flex flex-col items-center text-center gap-1 p-3 rounded-2xl border-2 transition-all ${b.conquistado ? "border-yellow-300 bg-yellow-50" : "border-gray-100 bg-gray-50 opacity-40 grayscale"}`}>
+                <span className="text-3xl">{b.emoji}</span>
+                <span className="text-[10px] font-bold text-gray-700 leading-tight">{b.titulo}</span>
+                {b.conquistado && <span className="text-[9px] text-yellow-600 font-medium">✓ Conquistado</span>}
+              </div>
+            ))}
+          </div>
+          {badges.filter(b => b.conquistado).length === 0 && (
+            <p className="text-center text-xs text-gray-400 mt-2">Visite estandes, avalie sessões e faça perguntas para desbloquear!</p>
+          )}
+        </div>
 
         {/* Identificação facial */}
         <Link href="/participante/facial"
